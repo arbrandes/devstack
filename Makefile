@@ -279,6 +279,12 @@ restore:  ## Restore all data volumes from the host. WARNING: THIS WILL OVERWRIT
 	docker run --rm --volumes-from -T $$(make -s dev.print-container.mongo) -v $$(pwd)/.dev/backups:/backup debian:jessie tar zxvf /backup/mongo.tar.gz
 	docker run --rm --volumes-from -T $$(make -s dev.print-container.elasticsearch) -v $$(pwd)/.dev/backups:/backup debian:jessie tar zxvf /backup/elasticsearch.tar.gz
 
+snapshot: | stop ## Commit container images and snapshot volumes
+	bash ./snapshot.sh snapshot $$COMPOSE_PROJECT_NAME
+
+snapshot.restore: ## Restore volumes from latest snapshot
+	bash ./snapshot.sh restore $$COMPOSE_PROJECT_NAME
+
 # TODO: Print out help for this target. Even better if we can iterate over the
 # services in docker-compose.yml, and print the actual service names.
 %-shell: ## Run a shell on the specified service container
