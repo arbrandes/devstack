@@ -387,6 +387,12 @@ dev.down: ## Stop and remove containers and networks for all services.
 dev.down.%: ## Stop and remove containers for specific services.
 	docker-compose rm --force --stop $$(echo $* | tr + " ")
 
+dev.snapshot: | dev.stop ## Commit container images and snapshot volumes
+	bash ./snapshot.sh snapshot $$COMPOSE_PROJECT_NAME
+
+dev.snapshot.restore: ## Restore volumes from latest snapshot
+	bash ./snapshot.sh restore $$COMPOSE_PROJECT_NAME
+
 
 ########################################################################################
 # Developer interface: System queries and checks.
